@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>공병우님의 게시판</h1>
+
+    <hr>
+        <a href="{% url "articles:create" %}">글쓰기 버튼</a>
+    <hr>
+
+
+    {% comment %} views.py에서 context로 넘겨준 key값 {% endcomment %}
+    {% comment %} DTL for 문 {% endcomment %}
+    {% for article in articles %}
+        {% comment %} DTL 변수(콧수염 괄호) {% endcomment %}
+        <p>글 id : {{article.pk}}</p>
+        <a href="{% url "articles:detail" article.pk%}">
+            <p>글 제목 : {{article.title}}</p>
+        </a>
+        <p>글 내용 : {{article.content}}</p>
+        <hr>
+    {% endfor %}
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% comment %} a태그(get요청) form태그(get, post요청)
+데이터를 같이 넘겨주려고 할 때 => form 태그 {% endcomment %}
+
+<form action="{% url "articles:create" %}" method = "POST"> 
+    {% comment %} csrf토큰 : 보안토큰(post방식) {% endcomment %}
+    {% csrf_token %}
+
+    <div>
+    <label for="title">Title :</label>
+    <input type="text" name='title'>
+    </div>
+    
+    <div>
+    <label for="content">Content:</label>
+    <textarea name="content" cols=30 rows = 10""></textarea>
+    </div>
+    
+    
+    <input type="submit" value = "게시글 생성">
+
+</form> 
+
+{% endblock content %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% comment %} GET방식, POST방식 차이??
+GET 방식 예시) 조회, 검색  -> url에 데이터가 노출
+POST 방식 예시) 회원가입, 로그인 -> 데이터가 노출되지 않는다.
+보안성이 있냐 없냐 차이
+
+POST방식이 보안이 있으니까 짱?? POST방식만 쓰면되는데 왜 굳이 GET방식을 쓸까?
+GET방식이 월씬 간단하다. {% endcomment %}
+
+{% comment %} form태크에서 action : 요청보낼 url 주소 {% endcomment %}
+<form action="https://search.naver.com/search.naver" method = "GET">
+
+    <label for="message">검색어를 입력하세요</label>
+    {% comment %} name 매우중요 {% endcomment %}
+    <input type="text" name="query">
+    <input type="submit" value='검색'>
+    
+</form>
+
+{% endblock content %}

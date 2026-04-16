@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% comment %} DTL 1번 변수 출력 : {{}} : 콧수염 괄호 {% endcomment %}
+    {% comment %} name 어디서 왔을까? {% endcomment %}
+    {% comment %} views.py에서 context의 key 값 {% endcomment %}
+    <h1>Hello, {{name}}</h1>
+
+    {% comment %} href속성 = url 작성
+    href = "https://127.0.0.1:8000/articles/dinner/" => 이렇게 해도 가능은하지만 사용하지는 않음
+    href = "{% url "app_name : name" %}" => naming url pattern : 이 방식을 사용함!!
+    get방식이면 보통 a태그 {% endcomment %}
+    <a href="{% url "articles:dinner" %}">dinner</a> |
+    <a href="{% url "articles:search" %}">search</a> |
+    <a href="{% url "articles:throw" %}">throw</a> |
+    <a href="{% url "articles:detail" number %}">detail</a> |
+
+
+
+{% endblock content %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+    <a href="{% url "articles:update" article.pk%}">EDIT</a>
+
+    <hr>
+    <form action="{% url "articles:delete" article.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="DELETE">
+    </form>
+    <hr>
+
+    <h2> DETAIL</h2>
+    <h3>{{article.pk}}번째 게시글</h3>
+    
+    <hr>
+
+    <P>제목 : {{article.title}}</P>
+    <P>내용 : {{article.content}}</P>
+    <P>작성 시각 : {{article.created_at}}</P>
+    <P>수정 시각 : {{article.updated_at}}</P>
+
+    {% comment %} Q) home버튼은 어떤 태그로 만들어야 할까?
+        A) a태그(get요청) <-> form태그(get, post 요청) 차이
+        데이터를 넘겨주냐 안넘겨주냐의 차이 {% endcomment %}
+
+    <a href="{% url "articles:index" %}">HOME</a>
+{% endblock content %}
