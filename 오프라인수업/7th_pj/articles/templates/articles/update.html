@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>EDIT</h1>
+
+    <form action="{% url "articles:update" article.pk %}" method="POST" enctype = "multipart/form-data">
+        {% csrf_token %}
+
+        {% comment %} 1. name 없는 이유 : form.save()만 해줘도 자동으로 DB에 저장
+        2. form.as_p : 자동으로 form(html css)을 만들어 준다. {% endcomment %}
+        {{form.as_p}}
+
+        <input type="submit" value="수정 완료">
+    </form>
+
+    <a href="{% url "articles:index" %}">HOME</a>
+{% endblock content %}

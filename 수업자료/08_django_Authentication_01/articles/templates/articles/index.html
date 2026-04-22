@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <!-- static 파일 불러오기 -->
+  <link rel="stylesheet" href="{% static "stylesheets/style.css" %}">
+  <img src="{% static "logo.png" %}" alt="logo">
+  <h1>글 목록</h1>
+  <p>Hello, {{user.username}}</p>
+  <a href="{% url "accounts:login" %}">Login</a> |
+  <a href="{% url "articles:create" %}">CREATE</a>
+  <hr>
+  {% for article in articles %}
+    <div>
+      <p>글 번호: {{ article.pk }}</p>
+      <p>
+        글 제목: <a href="{% url "articles:detail" article.pk %}">{{ article.title }}</a>
+      </p>
+    </div>
+    <hr>
+  {% endfor %}
+{% endblock content %}

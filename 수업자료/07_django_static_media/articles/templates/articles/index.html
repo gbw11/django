@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <link rel="stylesheet" href="{% static 'stylesheets/style.css' %}">
+  <h1>글 목록</h1>
+  <img src="{% static "images/sample-1.png" %}" alt="sample image">
+  {% comment %} settings.py 에서 DIR을 설정했기 때문에 사용가능 {% endcomment %}
+  <img src="{% static "sample-2.png" %}" alt="sample image">
+  <a href="{% url "articles:create" %}">CREATE</a>
+  <hr>
+  {% for article in articles %}
+    <div>
+      <p>글 번호: {{ article.pk }}</p>
+      <p>
+        글 제목: <a href="{% url "articles:detail" article.pk %}">{{ article.title }}</a>
+      </p>
+    </div>
+    <hr>
+  {% endfor %}
+{% endblock content %}

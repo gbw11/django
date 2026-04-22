@@ -17,16 +17,16 @@
 * 빈 객체 생성 후 값 할당 후 저장
 ```python
 # 빈 객체 생성
-article = Article()
+article1 = Article()
 
 # title 정보 작성
-article.title = 'first'
+article1.title = 'first'
 
 # content 정보 작성 
-article.content = 'django!'
+article1.content = 'django!'
 
 # 데이터베이스에 저장
-article.save()
+article1.save()
 
 # 데이터베이스 Article 테이블에 저장된 모든 데이터 읽어서 확인
 Article.objects.all()
@@ -36,10 +36,10 @@ Article.objects.all()
 ### 두 번째 방식
 ```python
 # 객체를 생성할 때 초기 값을 넣어서 생성
-article = Article(title=‘second’, content=‘django!’)
+article2 = Article(title='second', content='django!')
 
 # 데이터베이스에 저장
-article.save()
+article2.save()
 
 # 데이터베이스 Article 테이블에 저장된 모든 데이터 읽어서 확인
 Article.objects.all()
@@ -49,7 +49,7 @@ Article.objects.all()
 ### 세 번째 방식
 ```python
 # QuerySet API 인 create를 통해 한 번에 생성 및 저장
-Article.objects.create(title=‘third’, content=‘django!’)
+Article.objects.create(title='third', content='django!')
 
 # 데이터베이스 Article 테이블에 저장된 모든 데이터 읽어서 확인
 Article.objects.all()
@@ -71,13 +71,13 @@ Article.objects.all()
   * QuerySet으로 결과를 반환
 ```python
 # content가 django!인 데이터 조회
-Article.objects.filter(content=‘django!’)
+Article.objects.filter(content='django!')
 
 # title이 abc인 데이터 조회
-Article.objects.filter(title=‘abc’)
+Article.objects.filter(title='abc')
 
 # title이 first인 데이터 조회
-Article.objects.filter(title=‘first’)
+Article.objects.filter(title='first')
 ```
 ### get() 실습
 * 오직 1개의 데이터를 가져올 때 사용
@@ -93,7 +93,7 @@ Article.objects.get(pk=100)
 # 결과: DoesNotExist: Article matching query does not exist.
 
 # 일치하는 데이터가 여러 개 인 경우
-Article.objects.get(content=‘django!’)
+Article.objects.get(content='django!')
 # 결과: MultipleObjectsReturned: get() returned more than one Article -- it returned 2!
 ```
 
