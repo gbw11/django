@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}복용안전 판단 서비스{% endblock %}</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <header class="navbar">
+    <a href="/" class="logo">💊 복용안전</a>
+    <form action="/search/" method="get" class="search-bar">
+      <input type="text" name="q" placeholder="약품명, 성분, 용도로 검색..." value="{{ request.GET.q }}">
+      <button type="submit">검색</button>
+    </form>
+    <nav>
+      <a href="/analyze/">상호작용 분석</a>
+      <a href="/profile/" id="profile-btn">내 정보 설정</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>⚠️ 본 서비스는 의학적 진단을 대체하지 않습니다. 복용 전 반드시 의사·약사와 상담하세요.</p>
+  </footer>
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

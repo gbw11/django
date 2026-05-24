@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}복용안전 판단 서비스 - 홈{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>내 약, 안전하게 복용하고 있나요?</h1>
+  <p>약품 정보 검색부터 상호작용 분석, 개인 맞춤 위험도 판단까지</p>
+  <form action="/search/" method="get" class="hero-search">
+    <input type="text" name="q" placeholder="약품명 또는 성분명 검색...">
+    <button type="submit">검색하기</button>
+  </form>
+</section>
+
+<section class="features">
+  <div class="feature-card">
+    <span class="icon">🔍</span>
+    <h3>약품 검색</h3>
+    <p>제품명·성분·용도로 빠르게 검색</p>
+  </div>
+  <div class="feature-card">
+    <span class="icon">⚡</span>
+    <h3>상호작용 분석</h3>
+    <p>여러 약을 함께 복용해도 괜찮은지 확인</p>
+  </div>
+  <div class="feature-card">
+    <span class="icon">👤</span>
+    <h3>개인 맞춤 판단</h3>
+    <p>나이·지병·임신 등 내 상태에 맞는 분석</p>
+  </div>
+</section>
+
+<section class="popular">
+  <h2>자주 찾는 약품</h2>
+  <div class="medicine-grid">
+    {% for med in popular %}
+    <a href="/medicine/{{ med.pk }}/" class="medicine-card">
+      <span class="category-badge category-{{ med.category }}">{{ med.get_category_display }}</span>
+      <h4>{{ med.name }}</h4>
+      <p>{{ med.usage|truncatechars:50 }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

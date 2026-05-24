@@ -1,0 +1,72 @@
+[
+  {"model": "medicines.ingredient", "pk": 1, "fields": {"name": "아세트아미노펜", "description": "해열·진통 성분"}},
+  {"model": "medicines.ingredient", "pk": 2, "fields": {"name": "이부프로펜", "description": "소염·진통·해열 성분"}},
+  {"model": "medicines.ingredient", "pk": 3, "fields": {"name": "세티리진", "description": "항히스타민 성분"}},
+  {"model": "medicines.ingredient", "pk": 4, "fields": {"name": "아목시실린", "description": "항생제 성분"}},
+  {"model": "medicines.ingredient", "pk": 5, "fields": {"name": "오메프라졸", "description": "위산억제 성분"}},
+
+  {"model": "medicines.medicine", "pk": 1, "fields": {
+    "name": "타이레놀정 500mg", "category": "OTC", "manufacturer": "한국얀센",
+    "usage": "감기로 인한 발열, 두통, 치통, 근육통 완화",
+    "dosage": "성인 1회 1~2정, 1일 3~4회. 4~6시간 간격으로 복용. 1일 최대 4g 초과 금지",
+    "storage": "30°C 이하 보관. 직사광선 피할 것",
+    "precautions": "음주 중이거나 간질환자는 복용 전 의사 상담 필수. 공복 복용 가능",
+    "side_effects": "드물게 간독성, 피부 발진, 소화불량",
+    "contraindications": "중증 간질환, 아세트아미노펜 과민증"
+  }},
+  {"model": "medicines.medicine", "pk": 2, "fields": {
+    "name": "애드빌정 200mg", "category": "OTC", "manufacturer": "한국화이자",
+    "usage": "두통, 치통, 생리통, 근육통, 발열",
+    "dosage": "성인 1회 1~2정(200~400mg), 4~6시간 간격, 1일 최대 1200mg",
+    "storage": "25°C 이하 건조한 곳 보관",
+    "precautions": "식후 복용 권장. 위장이 약한 경우 우유와 함께 복용",
+    "side_effects": "위장장애, 소화불량, 드물게 위궤양",
+    "contraindications": "위궤양, 신장질환, 아스피린 천식, 임신 3분기"
+  }},
+  {"model": "medicines.medicine", "pk": 3, "fields": {
+    "name": "지르텍정 10mg", "category": "OTC", "manufacturer": "한국UCB",
+    "usage": "알레르기성 비염, 두드러기, 가려움증",
+    "dosage": "성인 1일 1회 1정. 취침 전 복용 권장",
+    "storage": "30°C 이하 보관",
+    "precautions": "졸음을 유발할 수 있으므로 운전 주의. 음주 삼가",
+    "side_effects": "졸음, 두통, 입 마름",
+    "contraindications": "중증 신장질환, 세티리진 과민증"
+  }},
+  {"model": "medicines.medicine", "pk": 4, "fields": {
+    "name": "아모크라정 500mg", "category": "ETC", "manufacturer": "종근당",
+    "usage": "세균성 감염증 (호흡기, 요로, 피부)",
+    "dosage": "성인 1회 500mg, 8시간마다. 식사와 관계없이 복용 가능",
+    "storage": "25°C 이하 건조한 곳",
+    "precautions": "정해진 기간 끝까지 복용. 임의 중단 금지",
+    "side_effects": "설사, 메스꺼움, 피부 발진, 드물게 알레르기 반응",
+    "contraindications": "페니실린 과민증, 단핵구증"
+  }},
+  {"model": "medicines.medicine", "pk": 5, "fields": {
+    "name": "오메파졸캡슐 20mg", "category": "ETC", "manufacturer": "대웅제약",
+    "usage": "위식도역류질환, 위궤양, 십이지장궤양",
+    "dosage": "1일 1회 20mg, 식전 30분 복용",
+    "storage": "30°C 이하 습기 피해 보관",
+    "precautions": "장기 복용 시 마그네슘 수치 모니터링 필요",
+    "side_effects": "두통, 설사, 복통, 장기 복용 시 골다공증 위험",
+    "contraindications": "오메프라졸 과민증"
+  }},
+
+  {"model": "medicines.medicineingredient", "pk": 1, "fields": {"medicine": 1, "ingredient": 1, "amount": "500mg"}},
+  {"model": "medicines.medicineingredient", "pk": 2, "fields": {"medicine": 2, "ingredient": 2, "amount": "200mg"}},
+  {"model": "medicines.medicineingredient", "pk": 3, "fields": {"medicine": 3, "ingredient": 3, "amount": "10mg"}},
+  {"model": "medicines.medicineingredient", "pk": 4, "fields": {"medicine": 4, "ingredient": 4, "amount": "500mg"}},
+  {"model": "medicines.medicineingredient", "pk": 5, "fields": {"medicine": 5, "ingredient": 5, "amount": "20mg"}},
+
+  {"model": "medicines.interaction", "pk": 1, "fields": {
+    "medicine_a": 1, "medicine_b": 2, "level": "FORBIDDEN",
+    "description": "아세트아미노펜과 이부프로펜 동시 복용은 신장 독성 위험을 높입니다. 동일 계열 진통제의 중복 복용은 금기입니다."
+  }},
+  {"model": "medicines.interaction", "pk": 2, "fields": {
+    "medicine_a": 2, "medicine_b": 3, "level": "CAUTION",
+    "description": "이부프로펜과 항히스타민제 병용 시 졸음과 어지러움이 강해질 수 있습니다. 운전·기계 조작 시 주의."
+  }},
+  {"model": "medicines.interaction", "pk": 3, "fields": {
+    "medicine_a": 3, "medicine_b": 4, "level": "CAUTION",
+    "description": "항히스타민제와 항생제 병용 시 중추신경 억제가 강해질 수 있습니다. 의사 지시에 따라 복용하세요."
+  }}
+]
