@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}내 정보 설정 - 복용안전{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>👤 내 정보 설정</h2>
+  <p class="page-desc">입력한 정보를 바탕으로 약품 위험도를 개인화하여 분석합니다.<br>
+     정보는 이 브라우저 세션에만 저장되며 서버에 개인정보로 보관되지 않습니다.</p>
+</div>
+
+<form id="profile-form" method="post" action="/profile/">
+  {% csrf_token %}
+
+  <div class="form-section">
+    <h3>기본 정보</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="age">나이</label>
+        <input type="number" id="age" name="age" min="0" max="130" placeholder="예: 35">
+      </div>
+      <div class="form-group">
+        <label>성별</label>
+        <div class="radio-group">
+          <label class="radio-item">
+            <input type="radio" name="gender" value="M"> 남성
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="gender" value="F"> 여성
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="gender" value="O"> 기타
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="height">키 (cm)</label>
+        <input type="number" id="height" name="height" min="0" max="300" step="0.1" placeholder="예: 170">
+      </div>
+      <div class="form-group">
+        <label for="weight">몸무게 (kg)</label>
+        <input type="number" id="weight" name="weight" min="0" max="500" step="0.1" placeholder="예: 65">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>건강 상태</h3>
+    <div class="form-group full-width">
+      <label for="conditions">지병 / 만성질환</label>
+      <textarea id="conditions" name="conditions" rows="3"
+        placeholder="예: 당뇨, 고혈압, 신장질환, 간질환 등 (쉼표로 구분)"></textarea>
+    </div>
+    <div class="checkbox-row">
+      <label class="toggle-item">
+        <input type="checkbox" name="is_pregnant" id="is_pregnant">
+        <span class="toggle-label">임신 중</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" name="is_breastfeeding" id="is_breastfeeding">
+        <span class="toggle-label">수유 중</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>현재 복용 중인 약품</h3>
+    <p class="section-desc">현재 복용 중인 약품을 선택하면 새 약품 검색 시 상호작용을 함께 확인합니다.</p>
+    <div class="medicine-checkbox-grid">
+      {% for med in all_medicines %}
+      <label class="medicine-checkbox-item">
+        <input type="checkbox" name="current_medicines" value="{{ med.pk }}">
+        <span class="checkbox-body">
+          <span class="category-badge category-{{ med.category }}">{{ med.get_category_display }}</span>
+          <strong>{{ med.name }}</strong>
+          <small>{{ med.manufacturer }}</small>
+        </span>
+      </label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn-save">저장하기</button>
+    <button type="reset" class="btn-reset">초기화</button>
+  </div>
+
+  <div id="save-feedback" class="save-feedback hidden">
+    ✅ 정보가 저장되었습니다. 이제 약품 검색 시 개인화된 위험도를 확인할 수 있습니다.
+  </div>
+</form>
+
+<script>
+document.getElementById('profile-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const res = await fetch('/profile/', { method: 'POST', body: formData });
+  const data = await res.json();
+  if (data.status === 'ok') {
+    const fb = document.getElementById('save-feedback');
+    fb.classList.remove('hidden');
+    setTimeout(() => fb.classList.add('hidden'), 4000);
+  }
+});
+
+document.querySelectorAll('.medicine-checkbox-item input').forEach(cb => {
+  cb.addEventListener('change', function() {
+    this.closest('.medicine-checkbox-item').classList.toggle('selected', this.checked);
+  });
+});
+</script>
+
+{% endblock %}

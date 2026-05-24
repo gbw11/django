@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}검색 결과: {{ query }} - 복용안전{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>검색 결과</h2>
+  {% if query %}
+    <p class="search-meta">
+      "<strong>{{ query }}</strong>" 검색 결과 — 총 {{ results|length }}건
+    </p>
+  {% endif %}
+</div>
+
+<form action="/search/" method="get" class="search-refine">
+  <input type="text" name="q" value="{{ query }}" placeholder="약품명, 성분, 용도로 검색...">
+  <button type="submit">다시 검색</button>
+</form>
+
+{% if query and not results %}
+  <div class="empty-state">
+    <span class="empty-icon">🔍</span>
+    <h3>검색 결과가 없습니다</h3>
+    <p>"{{ query }}"에 해당하는 약품을 찾을 수 없습니다.<br>
+       제품명, 성분명, 또는 용도로 다시 검색해 보세요.</p>
+  </div>
+
+{% elif results %}
+  <div class="result-list">
+    {% for med in results %}
+    <a href="/medicine/{{ med.pk }}/" class="result-item">
+      <div class="result-left">
+        <span class="category-badge category-{{ med.category }}">{{ med.get_category_display }}</span>
+        <h3>{{ med.name }}</h3>
+        <p class="result-manufacturer">{{ med.manufacturer }}</p>
+      </div>
+      <div class="result-right">
+        <p class="result-usage">{{ med.usage|truncatechars:80 }}</p>
+        <div class="result-ingredients">
+          {% for mi in med.medicineingredient_set.all %}
+            <span class="ingredient-tag">{{ mi.ingredient.name }} {{ mi.amount }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <span class="result-arrow">›</span>
+    </a>
+    {% endfor %}
+  </div>
+
+{% else %}
+  <div class="search-guide">
+    <h3>이렇게 검색해 보세요</h3>
+    <div class="guide-grid">
+      <div class="guide-item">
+        <span>💊</span>
+        <p><strong>제품명</strong><br>타이레놀, 애드빌, 지르텍</p>
+      </div>
+      <div class="guide-item">
+        <span>🧪</span>
+        <p><strong>성분명</strong><br>아세트아미노펜, 이부프로펜</p>
+      </div>
+      <div class="guide-item">
+        <span>🩺</span>
+        <p><strong>용도</strong><br>두통, 발열, 알레르기</p>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}

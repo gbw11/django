@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}내 정보 입력 - 복용안전{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>📋 내 정보 입력</h2>
+  <p class="page-desc">입력한 정보는 약품 상세 페이지에서 맞춤 복용지도를 제공하는 데 사용됩니다.</p>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+  {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+  <div class="form-section">
+    <h3>기본 정보</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>나이</label>
+        {{ form.age }}
+        <span class="field-help">연령 그룹(영아/소아/청소년/성인/고령자)에 따라 복용지도가 달라집니다.</span>
+      </div>
+      <div class="form-group">
+        <label>성별</label>
+        {{ form.gender }}
+      </div>
+      <div class="form-group">
+        <label>키 (cm)</label>{{ form.height }}
+      </div>
+      <div class="form-group">
+        <label>몸무게 (kg)</label>{{ form.weight }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>건강 상태</h3>
+    <div class="form-group full-width">
+      <label>지병 / 만성질환</label>
+      {{ form.conditions }}
+      <span class="field-help">예: 당뇨, 고혈압, 신장질환 (쉼표로 구분)</span>
+    </div>
+    <div class="checkbox-row" style="margin-top:16px;">
+      <label class="toggle-item">{{ form.is_pregnant }} <span class="toggle-label">임신 중</span></label>
+      <label class="toggle-item">{{ form.is_breastfeeding }} <span class="toggle-label">수유 중</span></label>
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h3>현재 복용 중인 약품</h3>
+    <p class="section-desc">선택하면 다른 약품 검색 시 상호작용을 자동으로 확인합니다.</p>
+    <div class="medicine-checkbox-grid">
+      {% for med in form.current_medicines %}
+      <label class="medicine-checkbox-item">
+        {{ med.tag }}
+        <span class="checkbox-body">
+          <strong>{{ med.choice_label }}</strong>
+        </span>
+      </label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn-save">저장하기</button>
+    <a href="/accounts/profile/" class="btn-reset" style="text-align:center; text-decoration:none; padding:14px 24px;">취소</a>
+  </div>
+</form>
+
+<script>
+// 체크된 항목 시각 피드백
+document.querySelectorAll('.medicine-checkbox-item input').forEach(cb => {
+  cb.addEventListener('change', function() {
+    this.closest('.medicine-checkbox-item').classList.toggle('selected', this.checked);
+  });
+  if (cb.checked) cb.closest('.medicine-checkbox-item').classList.add('selected');
+});
+</script>
+{% endblock %}

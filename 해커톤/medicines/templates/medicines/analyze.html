@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}상호작용 분석 - 복용안전{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h2>⚡ 약품 상호작용 분석</h2>
+  <p class="page-desc">함께 복용할 약품을 선택하면 상호작용과 위험도를 분석해드립니다.</p>
+</div>
+
+<form method="post" action="/analyze/" class="analyze-form">
+  {% csrf_token %}
+
+  <div class="medicine-select-area">
+    <h3>복용할 약품 선택 <span class="hint">(2개 이상 선택)</span></h3>
+    <div class="medicine-checkbox-grid">
+      {% for med in all_medicines %}
+      <label class="medicine-checkbox-item {% if result and med in result.selected.all %}selected{% endif %}">
+        <input type="checkbox"
+               name="medicine_ids"
+               value="{{ med.pk }}"
+               {% if result and med in result.selected.all %}checked{% endif %}>
+        <span class="checkbox-body">
+          <span class="category-badge category-{{ med.category }}">{{ med.get_category_display }}</span>
+          <strong>{{ med.name }}</strong>
+          <small>{{ med.manufacturer }}</small>
+        </span>
+      </label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <button type="submit" class="btn-analyze">분석하기</button>
+</form>
+
+{% if result %}
+<div class="analyze-result">
+
+  <!-- 선택된 약품 목록 -->
+  <div class="selected-summary">
+    <h3>선택된 약품</h3>
+    <div class="selected-tags">
+      {% for med in result.selected %}
+        <span class="selected-tag">{{ med.name }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- 종합 위험도 -->
+  <div class="risk-banner risk-{{ result.overall }}">
+    <div class="risk-label">
+      {% if result.overall == 'HIGH' %}
+        ⛔ 종합 위험도: 높음 — 병용 금기 약품이 포함되어 있습니다
+      {% elif result.overall == 'MEDIUM' %}
+        ⚠️ 종합 위험도: 주의 — 병용 시 주의가 필요한 조합입니다
+      {% else %}
+        ✅ 종합 위험도: 낮음 — 선택된 약품 간 주요 상호작용이 없습니다
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 상호작용 상세 -->
+  {% if result.interactions %}
+  <div class="interactions-detail">
+    <h3>상호작용 상세 내역</h3>
+    {% for inter in result.interactions %}
+    <div class="interaction-card level-{{ inter.level }}">
+      <div class="interaction-header">
+        <span class="inter-level">{{ inter.get_level_display }}</span>
+        <strong>{{ inter.medicine_a.name }} ↔ {{ inter.medicine_b.name }}</strong>
+      </div>
+      <p>{{ inter.description }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="no-interaction">
+    <p>✅ 선택한 약품들 사이에 등록된 상호작용 정보가 없습니다.</p>
+    <p class="caution-note">※ 등록되지 않은 상호작용이 존재할 수 있으므로, 복용 전 약사에게 확인하세요.</p>
+  </div>
+  {% endif %}
+
+  <!-- 개별 약품 복용지도 -->
+  <div class="individual-guides">
+    <h3>개별 약품 복용지도</h3>
+    {% for med in result.selected %}
+    <details class="guide-accordion">
+      <summary>{{ med.name }}</summary>
+      <div class="guide-content">
+        <div class="guide-section">
+          <h4>복용법</h4>
+          <p>{{ med.dosage }}</p>
+        </div>
+        <div class="guide-section">
+          <h4>주의사항</h4>
+          <p>{{ med.precautions }}</p>
+        </div>
+        <div class="guide-section">
+          <h4>금기 조건</h4>
+          <p class="contraindication-text">{{ med.contraindications }}</p>
+        </div>
+      </div>
+    </details>
+    {% endfor %}
+  </div>
+
+</div>
+{% endif %}
+
+<script>
+// 체크박스 선택 시 시각 피드백
+document.querySelectorAll('.medicine-checkbox-item input').forEach(cb => {
+  cb.addEventListener('change', function() {
+    this.closest('.medicine-checkbox-item').classList.toggle('selected', this.checked);
+  });
+});
+</script>
+
+{% endblock %}

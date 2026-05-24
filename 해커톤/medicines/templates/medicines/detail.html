@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% block title %}{{ medicine.name }} - 복용안전{% endblock %}
+{% block content %}
+
+<div class="detail-header">
+  <span class="category-badge category-{{ medicine.category }}">{{ medicine.get_category_display }}</span>
+  <h1>{{ medicine.name }}</h1>
+  <p class="manufacturer">{{ medicine.manufacturer }}</p>
+</div>
+
+<!-- ── 위험도 배너 ── -->
+<div class="risk-banner risk-{{ risk_level }}">
+  <div class="risk-label">
+    {% if risk_level == 'HIGH' %}⛔ 위험도 높음
+    {% elif risk_level == 'MEDIUM' %}⚠️ 주의 필요
+    {% else %}✅ 위험도 낮음{% endif %}
+    {% if profile and profile.age %}
+      <span class="risk-personalized">— {{ user.username }}님 맞춤 분석</span>
+    {% elif not user.is_authenticated %}
+      <span class="risk-personalized">— 일반 기준 (로그인 시 개인화)</span>
+    {% endif %}
+  </div>
+  <ul class="risk-reasons">
+    {% for reason in risk_reasons %}<li>{{ reason }}</li>{% endfor %}
+  </ul>
+</div>
+
+<!-- ── 개인 맞춤 복용지도 블록 ── -->
+{% if not user.is_authenticated %}
+<!-- 미로그인 -->
+<div class="personalized-prompt not-logged-in">
+  <div class="prompt-icon">👤</div>
+  <div class="prompt-text">
+    <strong>개인 맞춤 복용지도를 받아보세요</strong>
+    <p>로그인하면 나이·지병·임신 여부 등 내 상태에 맞는 복용량과 주의사항을 확인할 수 있습니다.</p>
+  </div>
+  <div class="prompt-actions">
+    <a href="/accounts/login/?next={{ current_path }}" class="btn-primary">로그인</a>
+    <a href="/accounts/signup/" class="btn-outline">회원가입</a>
+  </div>
+</div>
+
+{% elif not profile_complete %}
+<!-- 로그인 O, 프로필 미완성 -->
+<div class="personalized-prompt no-profile">
+  <div class="prompt-icon">📋</div>
+  <div class="prompt-text">
+    <strong>내 정보를 입력하면 맞춤 복용지도를 볼 수 있어요</strong>
+    <p>나이, 지병, 복용 중인 약 등을 입력하면 이 약이 나에게 안전한지 정확하게 분석해드립니다.</p>
+  </div>
+  <div class="prompt-actions">
+    <a href="/accounts/profile/edit/?next={{ current_path }}" class="btn-primary">내 정보 입력하기</a>
+  </div>
+</div>
+
+{% else %}
+<!-- 로그인 O, 프로필 완성 → 맞춤 복용지도 표시 -->
+<div class="personalized-guide">
+  <div class="guide-header">
+    <h2>
+      👤 {{ user.username }}님의 맞춤 복용지도
+      <span class="age-group-badge">
+        {% if age_group == 'infant' %}영아
+        {% elif age_group == 'child' %}소아
+        {% elif age_group == 'teen' %}청소년
+        {% elif age_group == 'elderly' %}고령자
+        {% else %}성인{% endif %}
+        ({{ profile.age }}세)
+      </span>
+    </h2>
+    <a href="/accounts/profile/edit/?next={{ current_path }}" class="btn-edit-profile">정보 수정</a>
+  </div>
+
+  <!-- 내 상태 요약 -->
+  <div class="my-status-bar">
+    {% if profile.gender %}<span class="status-chip">{{ profile.get_gender_display }}</span>{% endif %}
+    {% if profile.age %}<span class="status-chip">{{ profile.age }}세</span>{% endif %}
+    {% if profile.weight %}<span class="status-chip">{{ profile.weight }}kg</span>{% endif %}
+    {% if profile.is_pregnant %}<span class="status-chip chip-warning">임신 중</span>{% endif %}
+    {% if profile.is_breastfeeding %}<span class="status-chip chip-warning">수유 중</span>{% endif %}
+    {% if profile.conditions %}<span class="status-chip chip-info">{{ profile.conditions }}</span>{% endif %}
+  </div>
+
+  {% if personalized %}
+    {% if personalized.is_contraindicated %}
+    <!-- 금기 -->
+    <div class="guide-card guide-forbidden">
+      <div class="guide-card-title">⛔ 이 연령 그룹에서는 복용이 금지됩니다</div>
+      <p>{{ personalized.dosage_info }}</p>
+      {% if personalized.special_precautions %}
+      <p class="guide-note">{{ personalized.special_precautions }}</p>
+      {% endif %}
+    </div>
+    {% else %}
+    <div class="guide-cards-grid">
+      <!-- 복용량 -->
+      <div class="guide-card guide-dosage">
+        <div class="guide-card-icon">💊</div>
+        <div class="guide-card-title">맞춤 복용량</div>
+        <p>{{ personalized.dosage_info }}</p>
+      </div>
+      <!-- 특이 주의사항 -->
+      {% if personalized.special_precautions %}
+      <div class="guide-card guide-precaution">
+        <div class="guide-card-icon">⚠️</div>
+        <div class="guide-card-title">{{ profile.get_age_group_display }}에서 특히 주의할 점</div>
+        <p>{{ personalized.special_precautions }}</p>
+      </div>
+      {% endif %}
+      <!-- 보관법 -->
+      <div class="guide-card guide-storage">
+        <div class="guide-card-icon">📦</div>
+        <div class="guide-card-title">보관법</div>
+        <p>{{ medicine.storage }}</p>
+      </div>
+      <!-- 금기 조건 -->
+      <div class="guide-card guide-contra">
+        <div class="guide-card-icon">🚫</div>
+        <div class="guide-card-title">금기 조건</div>
+        <p class="contraindication-text">{{ medicine.contraindications }}</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- 현재 복용 중인 약과의 상호작용 요약 -->
+    {% with current_meds=profile.current_medicines.all %}
+    {% if current_meds %}
+    <div class="current-med-check">
+      <h3>복용 중인 약과의 상호작용 확인</h3>
+      <div class="current-med-list">
+        {% for cur_med in current_meds %}
+          {% with cross=None %}
+          <div class="cur-med-item">
+            <span class="cur-med-name">{{ cur_med.name }}</span>
+            <a href="/analyze/" class="cur-med-check-btn">상호작용 분석 →</a>
+          </div>
+          {% endwith %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% endwith %}
+
+  {% else %}
+  <!-- PersonalizedDosage 데이터 없을 때 일반 복용법 표시 -->
+  <div class="guide-card guide-dosage">
+    <div class="guide-card-icon">💊</div>
+    <div class="guide-card-title">복용법 (일반 기준)</div>
+    <p>{{ medicine.dosage }}</p>
+    <p class="guide-note">※ 이 연령 그룹에 대한 상세 복용 정보가 아직 등록되지 않았습니다. 복용 전 약사에게 문의하세요.</p>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+<!-- ── 약품 정보 탭 ── -->
+<div class="section-divider"></div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="info">약품 정보</button>
+  <button class="tab" data-tab="dosage">일반 복용지도</button>
+  <button class="tab" data-tab="interaction">상호작용</button>
+</div>
+
+<div id="info" class="tab-content active">
+  <h3>성분 및 함량</h3>
+  <table class="info-table">
+    <tr><th>성분명</th><th>함량</th><th>설명</th></tr>
+    {% for mi in ingredients %}
+    <tr><td>{{ mi.ingredient.name }}</td><td>{{ mi.amount }}</td><td>{{ mi.ingredient.description }}</td></tr>
+    {% endfor %}
+  </table>
+  <h3>용도·효능</h3><p>{{ medicine.usage }}</p>
+  <h3>부작용</h3><p>{{ medicine.side_effects }}</p>
+  <h3>금기 조건</h3><p class="contraindication-text">{{ medicine.contraindications }}</p>
+</div>
+
+<div id="dosage" class="tab-content">
+  <h3>성인 기준 복용법</h3><p>{{ medicine.dosage }}</p>
+  <h3>주의사항</h3><p>{{ medicine.precautions }}</p>
+  <h3>보관법</h3><p>{{ medicine.storage }}</p>
+</div>
+
+<div id="interaction" class="tab-content">
+  {% if interactions %}
+    {% for inter in interactions %}
+    <div class="interaction-card level-{{ inter.level }}">
+      <span class="inter-level">{{ inter.get_level_display }}</span>
+      <strong>{{ inter.medicine_a.name }} ↔ {{ inter.medicine_b.name }}</strong>
+      <p>{{ inter.description }}</p>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="no-data">등록된 상호작용 정보가 없습니다.</p>
+  {% endif %}
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+</script>
+{% endblock %}

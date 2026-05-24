@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}내 프로필 - 복용안전{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h2>👤 내 프로필</h2>
+</div>
+
+<div class="profile-view-card">
+  <div class="profile-row"><span class="profile-label">나이</span><span>{{ profile.age|default:"미입력" }}세</span></div>
+  <div class="profile-row"><span class="profile-label">성별</span><span>{{ profile.get_gender_display|default:"미입력" }}</span></div>
+  <div class="profile-row"><span class="profile-label">키</span><span>{{ profile.height|default:"미입력" }} cm</span></div>
+  <div class="profile-row"><span class="profile-label">몸무게</span><span>{{ profile.weight|default:"미입력" }} kg</span></div>
+  <div class="profile-row"><span class="profile-label">지병</span><span>{{ profile.conditions|default:"없음" }}</span></div>
+  <div class="profile-row"><span class="profile-label">임신 여부</span><span>{{ profile.is_pregnant|yesno:"예,아니오" }}</span></div>
+  <div class="profile-row"><span class="profile-label">수유 여부</span><span>{{ profile.is_breastfeeding|yesno:"예,아니오" }}</span></div>
+  <div class="profile-row">
+    <span class="profile-label">복용 중인 약</span>
+    <span>
+      {% for med in profile.current_medicines.all %}
+        <span class="ingredient-tag">{{ med.name }}</span>
+      {% empty %}없음{% endfor %}
+    </span>
+  </div>
+</div>
+
+<a href="/accounts/profile/edit/" class="btn-save" style="display:inline-block; margin-top:16px; padding:12px 28px; text-decoration:none;">정보 수정하기</a>
+{% endblock %}
