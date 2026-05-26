@@ -1,0 +1,26 @@
+[
+  {
+    "model": "music.artist",
+    "pk": 1,
+    "fields": {
+      "name": "NewJeans",
+      "profile": "K-pop group"
+    }
+  },
+  {
+    "model": "music.artist",
+    "pk": 2,
+    "fields": {
+      "name": "IU",
+      "profile": "Singer-songwriter"
+    }
+  },
+  {
+    "model": "music.artist",
+    "pk": 3,
+    "fields": {
+      "name": "SEVENTEEN",
+      "profile": "K-pop group"
+    }
+  }
+]

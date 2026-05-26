@@ -1,0 +1,35 @@
+[
+  {
+    "model": "music.album",
+    "pk": 1,
+    "fields": {
+      "title": "Get Up",
+      "artist": 1,
+      "genre": 1,
+      "release_date": "2023-07-21",
+      "description": "Second EP"
+    }
+  },
+  {
+    "model": "music.album",
+    "pk": 2,
+    "fields": {
+      "title": "Palette",
+      "artist": 2,
+      "genre": 2,
+      "release_date": "2017-04-21",
+      "description": "Fourth studio album"
+    }
+  },
+  {
+    "model": "music.album",
+    "pk": 3,
+    "fields": {
+      "title": "FML",
+      "artist": 3,
+      "genre": 3,
+      "release_date": "2023-04-24",
+      "description": "Tenth mini album"
+    }
+  }
+]

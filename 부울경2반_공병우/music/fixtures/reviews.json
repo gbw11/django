@@ -1,0 +1,32 @@
+[
+  {
+    "model": "music.review",
+    "pk": 1,
+    "fields": {
+      "album": 1,
+      "content": "Bright and concise.",
+      "rating": 5,
+      "created_at": "2026-05-01T09:00:00+09:00"
+    }
+  },
+  {
+    "model": "music.review",
+    "pk": 2,
+    "fields": {
+      "album": 2,
+      "content": "Warm vocal color.",
+      "rating": 4,
+      "created_at": "2026-05-02T10:30:00+09:00"
+    }
+  },
+  {
+    "model": "music.review",
+    "pk": 3,
+    "fields": {
+      "album": 3,
+      "content": "Energetic tracks.",
+      "rating": 5,
+      "created_at": "2026-05-03T14:20:00+09:00"
+    }
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "model": "music.genre",
+    "pk": 1,
+    "fields": {
+      "name": "Pop"
+    }
+  },
+  {
+    "model": "music.genre",
+    "pk": 2,
+    "fields": {
+      "name": "Ballad"
+    }
+  },
+  {
+    "model": "music.genre",
+    "pk": 3,
+    "fields": {
+      "name": "Dance"
+    }
+  }
+]
